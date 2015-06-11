@@ -7,6 +7,8 @@ Followed http://sebsauvage.net/python/gui/ to create the basic layout.
 '''
 
 import Tkinter
+from barcode_handling import createBarCode
+
 class otf(Tkinter.Tk):
     def __init__(self, parent):
         Tkinter.Tk.__init__(self, parent)
@@ -22,6 +24,8 @@ class otf(Tkinter.Tk):
         self.readcode.grid(column = 0, row = 0, sticky = "EW")
         self.readcode.bind("<Return>", self.OnPressEnter)
         self.code.set(u"Enter barcode name")
+
+        self.codeimage = createBarCode(otf_string = self.readcode)
 
         # Button for printing
         gobutton = Tkinter.Button(self, text = u"Print",
