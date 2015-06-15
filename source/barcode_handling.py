@@ -16,7 +16,4 @@ def createBarCode(otf_string):
 
     img = qr.make_image()
 
-    save_to_file = otf_string + ".png"
-    img.save("m001.png")
-
     return img

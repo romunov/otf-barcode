@@ -7,12 +7,17 @@ Followed http://sebsauvage.net/python/gui/ to create the basic layout.
 '''
 
 import Tkinter
+from PIL import Image, ImageTk
 from barcode_handling import createBarCode
 
 class otf(Tkinter.Tk):
     def __init__(self, parent):
         Tkinter.Tk.__init__(self, parent)
         self.parent = parent
+        self.codeimage = None
+        self.code = None
+        self.readcode = None
+        self.labelVariable = None
         self.initialize()
 
     def initialize(self):
@@ -25,7 +30,13 @@ class otf(Tkinter.Tk):
         self.readcode.bind("<Return>", self.OnPressEnter)
         self.code.set(u"Enter barcode name")
 
+        # Create canvas
         self.codeimage = createBarCode(otf_string = self.readcode)
+        # trying to display image http://stackoverflow.com/questions/14506497/image-in-canvas-backgroud-python
+        cv = Tkinter.Canvas(master = None, width = self.codeimage.pixel_size,
+                            height = self.codeimage.pixel_size)
+        codeimage_canvas = cv.create_image(position = (0, 0), image = self.codeimage)
+        codeimage_canvas.grid(column = 0, row = 1)
 
         # Button for printing
         gobutton = Tkinter.Button(self, text = u"Print",
@@ -59,11 +70,13 @@ class otf(Tkinter.Tk):
         self.readcode.focus_set()
         self.readcode.selection_range(0, Tkinter.END)
 
+        save_to_file = self.code.get() + ".png"
+        self.codeimage.imsave(save_to_file, self.codeimage)
+
     def OnPressEnter(self, event):
         self.labelVariable.set(self.code.get())
         self.readcode.focus_set()
         self.readcode.selection_range(0, Tkinter.END)
-
 
 
 if __name__ == "__main__":
