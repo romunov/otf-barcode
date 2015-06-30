@@ -7,20 +7,24 @@ Followed http://sebsauvage.net/python/gui/ to create the basic layout.
 '''
 
 import Tkinter
-from PIL import Image, ImageTk
-from barcode_handling import createBarCode
+from barcode_handling import createBarCode, displayImage
 
 class otf(Tkinter.Tk):
     def __init__(self, parent):
         Tkinter.Tk.__init__(self, parent)
         self.parent = parent
+        self.image = None
         self.codeimage = None
         self.code = None
         self.readcode = None
         self.labelVariable = None
+        self.gobutton = None
+        self.cv = None
         self.initialize()
 
+
     def initialize(self):
+
         self.grid()
 
         # Entry field for barcode
@@ -30,27 +34,22 @@ class otf(Tkinter.Tk):
         self.readcode.bind("<Return>", self.OnPressEnter)
         self.code.set(u"Enter barcode name")
 
-        # Create canvas
-        self.codeimage = createBarCode(otf_string = self.readcode)
-        # trying to display image http://stackoverflow.com/questions/14506497/image-in-canvas-backgroud-python
-        cv = Tkinter.Canvas(master = None, width = self.codeimage.pixel_size,
-                            height = self.codeimage.pixel_size)
-        codeimage_canvas = cv.create_image(position = (0, 0), image = self.codeimage)
-        codeimage_canvas.grid(column = 0, row = 1)
-
         # Button for printing
-        gobutton = Tkinter.Button(self, text = u"Print",
+        self.gobutton = Tkinter.Button(self, text = u"Display",
                                   command = self.OnButtonClick)
-        gobutton.grid(column = 1, row = 0)
+        self.gobutton.grid(column = 1, row = 0)
 
         # some text under the entry field
-        self.labelVariable = Tkinter.StringVar()
-        label = Tkinter.Label(self, anchor = "w",
-                              fg = "white",
-                              bg = "grey",
-                              text = "test",
-                              textvariable = self.labelVariable)
-        self.labelVariable.set(u"Code will be printed here")
+        # self.labelVariable = Tkinter.StringVar()
+        # label = Tkinter.Label(self, anchor = "w",
+        #                       fg = "white",
+        #                       bg = "grey",
+        #                       text = "test",
+        #                       textvariable = self.labelVariable)
+        # self.labelVariable.set(u"Code will be printed here")
+
+        #Display default image
+        displayImage(self)
 
         # enable resizing
         self.grid_columnconfigure(0, weight = 1)
@@ -63,18 +62,20 @@ class otf(Tkinter.Tk):
         self.readcode.focus_set()
         self.readcode.selection_range(0, Tkinter.END)
 
-        label.grid(column = 0, row = 1, sticky = "EW")
+        # label.grid(column = 0, row = 1, sticky = "EW")
 
     def OnButtonClick(self):
-        self.labelVariable.set(self.code.get())
+        # self.labelVariable.set(self.code.get())
         self.readcode.focus_set()
         self.readcode.selection_range(0, Tkinter.END)
 
-        save_to_file = self.code.get() + ".png"
-        self.codeimage.imsave(save_to_file, self.codeimage)
+        displayImage(self)
+
+        # save_to_file = self.code.get() + ".png"
+        # plt.imsave(save_to_file, self.image)
 
     def OnPressEnter(self, event):
-        self.labelVariable.set(self.code.get())
+        # self.labelVariable.set(self.code.get())
         self.readcode.focus_set()
         self.readcode.selection_range(0, Tkinter.END)
 
