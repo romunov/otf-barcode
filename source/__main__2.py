@@ -7,6 +7,7 @@
 
 import Tkinter as tk
 from PIL import Image, ImageTk
+from barcode_handling import createBarCode
 
 class otf(tk.Tk):
 
@@ -21,6 +22,8 @@ class otf(tk.Tk):
         self.gobutton = None
         # self.cv = None
         self.photo = None
+        self.canvas = None
+
         self.initialize()
 
 
@@ -44,31 +47,43 @@ class otf(tk.Tk):
 
         ## Place figure on a canvas
         # Import photo and create canvas
-        self.photo = Image.open("363.jpg")
+
+        self.photo = createBarCode(otf_string = self.code)
+        # self.photo = Image.open("363.jpg")
         ph_width, ph_height = self.photo.size
         self.photo = ImageTk.PhotoImage(self.photo)
-        cv = tk.Canvas(master = self, width = ph_width, height = ph_height)
+        self.canvas = tk.Canvas(master = self, width = ph_width, height = ph_height)
 
         # Add image to the canvas
-        cv.create_image(0,0, image = self.photo)
+        self.image_on_canvas = self.canvas.create_image(round(ph_height/2), round(ph_width/2), image = self.photo)
 
         # Place elements on the grid
         self.grid()
         self.readcode.grid(column = 0, row = 0)
-        self.gobutton.grid(column = 1, row = 0)
-        cv.grid(column = 0, row = 1, columnspan = 2)
+        self.gobutton.grid(column = 1, row = 0, sticky = tk.E)
+        self.canvas.grid(row = 1, columnspan = 2, sticky = tk.N)
 
 
     # Control resizing
     def OnConfirm(self):
         self.readcode.focus_set()
         self.readcode.selection_range(0, tk.END)
-        print(self.readcode.get())
+        # print(self.readcode.get())
+        # print(self.code)
+
+        self.photo = createBarCode(otf_string = self.readcode.get())
+        self.photo = ImageTk.PhotoImage(self.photo)
+        self.canvas.itemconfig(self.image_on_canvas, image = self.photo)
 
     def OnReturn(self, event):
         self.readcode.focus_set()
         self.readcode.selection_range(0, tk.END)
-        print(self.readcode.get())
+        # print(self.readcode.get())
+        # print(self.code)
+
+        self.photo = createBarCode(otf_string = self.readcode.get())
+        self.photo = ImageTk.PhotoImage(self.photo)
+        self.canvas.itemconfig(self.image_on_canvas, image = self.photo)
 
 
 
