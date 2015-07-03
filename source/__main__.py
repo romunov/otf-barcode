@@ -6,7 +6,7 @@
 '''
 
 import Tkinter as tk
-from PIL import Image, ImageTk
+from PIL import ImageTk
 from barcode_handling import createBarCode
 
 class otf(tk.Tk):
