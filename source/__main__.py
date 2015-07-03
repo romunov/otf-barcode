@@ -2,7 +2,7 @@
 
 '''
 
-@author 
+@author Roman Luštrik (roman.lustrik@biolitika.si)
 '''
 
 import Tkinter as tk
@@ -16,6 +16,7 @@ class otf(tk.Tk):
         self.parent = parent
         self.image = None
         self.codeimage = None
+        self.radiobuttons = tk.StringVar()
         self.code = tk.StringVar()
         self.readcode = tk.Entry(self, textvariable = self.code)
         # self.labelVariable = None
@@ -29,7 +30,7 @@ class otf(tk.Tk):
 
     def initialize(self):
 
-        # Define entry field
+        ## Define entry field
         self.code.set(u"Enter barcode")
         self.readcode = tk.Entry(master = self, textvariable = self.code)
         self.readcode.bind("<Return>", self.OnConfirm)
@@ -45,11 +46,28 @@ class otf(tk.Tk):
         # Define enter
         self.readcode.bind("<Return>", self.OnReturn)
 
+        ## Define radiobuttons, first is displayed text, second is internal code to pass on to
+        ## other functions and third element is column position.
+        possible_codes = [
+            ("QR Code", "qr", "0"),
+            ("DataMatrix", "dm", "1")
+        ]
+
+        # self.radiobuttons.set("L")
+        self.radiobuttons = tk.Radiobutton(self, text = "QR code", variable = self.radiobuttons, value = "qr",
+                                           indicatoron = False, command = self.OnRadioButtonClick).grid(row = 2, column = 0)
+        self.radiobuttons = tk.Radiobutton(self, text = "DataMatrix", variable = self.radiobuttons, value = "dm",
+                                           indicatoron = False, command = self.OnRadioButtonClick).grid(row = 2, column = 1)
+
+        # for text, mode, pos in possible_codes:
+        #     self.radiobuttons = tk.Radiobutton(self, text = text, variable = self.radiobuttons,
+        #                                        value = mode, indicatoron = 0)
+        #     self.radiobuttons.grid(row = 3, column = pos)
+
         ## Place figure on a canvas
         # Import photo and create canvas
 
-        self.photo = createBarCode(otf_string = self.code)
-        # self.photo = Image.open("363.jpg")
+        self.photo = createBarCode(otf_string = self.readcode.get())
         ph_width, ph_height = self.photo.size
         self.photo = ImageTk.PhotoImage(self.photo)
         self.canvas = tk.Canvas(master = self, width = ph_width, height = ph_height)
@@ -84,6 +102,9 @@ class otf(tk.Tk):
         self.photo = createBarCode(otf_string = self.readcode.get())
         self.photo = ImageTk.PhotoImage(self.photo)
         self.canvas.itemconfig(self.image_on_canvas, image = self.photo)
+
+    def OnRadioButtonClick(self):
+        print("tudlu")
 
 
 
