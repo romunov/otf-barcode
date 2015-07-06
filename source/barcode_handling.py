@@ -14,19 +14,20 @@ import io
 def createBarCode(otf_string, codetype = "dm"):
 
     if codetype == "qr":
-        from hubarcode.qrcode import QRCodeEncoder
-        qr = QRCodeEncoder(otf_string)
-        qr_in_bytes = io.BytesIO(qr.get_imagedata())
-        img = PIL.Image.open(qr_in_bytes)
+        # from hubarcode.qrcode import QRCodeEncoder
+        # qr = QRCodeEncoder(otf_string)
+        # qr_in_bytes = io.BytesIO(qr.get_imagedata())
+        # img = PIL.Image.open(qr_in_bytes)
+
+        # return img
+
+        import qrcode
+        qr = qrcode.QRCode(version = 1, error_correction = qrcode.constants.ERROR_CORRECT_L, box_size = 5, border = 6)
+        qr.add_data(otf_string)
+        qr.make(fit = True)
+        img = qr.make_image()
 
         return img
-        # import qrcode
-        # qr = qrcode.QRCode(version = 1, error_correction = qrcode.constants.ERROR_CORRECT_L, box_size = 5, border = 6)
-        # qr.add_data(otf_string)
-        # qr.make(fit = True)
-        # img = qr.make_image()
-        #
-        # return img
 
     if codetype == "dm":
         from hubarcode.datamatrix import DataMatrixEncoder
