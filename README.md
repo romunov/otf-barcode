@@ -10,3 +10,4 @@ The program has the following dependencies:
   * io (comes installed with Python)
   * [qrcode](https://pypi.python.org/pypi/qrcode)
   * [huBarcode](https://github.com/hudora/huBarcode)
+  * [tkinter](https://wiki.python.org/moin/TkInter)
