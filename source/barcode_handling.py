@@ -5,9 +5,9 @@ codetype is a string and can be "dm" (DataMatrix), "qr" (QR)
 @author Roman Luštrik, 11.6.2015
 '''
 
-
-
-import PIL
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
 import io
 
 # Generate QR code
@@ -33,7 +33,16 @@ def createBarCode(otf_string, codetype = "dm"):
         from hubarcode.datamatrix import DataMatrixEncoder
         dm = DataMatrixEncoder(otf_string)
         dm_in_bytes = io.BytesIO(dm.get_imagedata())
-        img = PIL.Image.open(dm_in_bytes)
+        img = Image.open(dm_in_bytes)
+
+        return img
+
+    if codetype == "128":
+        img = Image.new("RGB", size = (400, 200), color = "white")
+        draw = ImageDraw.Draw(img)
+        font_img = ImageFont.truetype(font = "code39.ttf")
+
+        draw.text(xy = (10, 10), text = otf_string, font = font_img, fill = "black")
 
         return img
 
