@@ -8,10 +8,11 @@ codetype is a string and can be "dm" (DataMatrix), "qr" (QR)
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
+from PIL import ImageTk
 import io
 
 # Generate QR code
-def createBarCode(otf_string, codetype = "dm"):
+def createBarCode(otf_string, codetype = "dm", size = (200, 200), bg_color = "white", font_color = "black"):
 
     if codetype == "qr":
         # from hubarcode.qrcode import QRCodeEncoder
@@ -38,11 +39,12 @@ def createBarCode(otf_string, codetype = "dm"):
         return img
 
     if codetype == "128":
-        img = Image.new("RGB", size = (400, 200), color = "white")
+        img = Image.new("RGB", size = size, color = bg_color)
         draw = ImageDraw.Draw(img)
         font_img = ImageFont.truetype(font = "code39.ttf")
 
-        draw.text(xy = (10, 10), text = otf_string, font = font_img, fill = "black")
+        draw.text(xy = (10, 10), text = otf_string, font = font_img, fill = font_color)
+        out_img = ImageTk.PhotoImage(img) # convert to PhotoImage since Canvas can't handle PIL images
 
-        return img
+        return out_img
 
