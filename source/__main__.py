@@ -5,10 +5,11 @@
 @author Roman Luštrik (roman.lustrik@biolitika.si)
 '''
 
+# import statements
 import Tkinter as tk
-from PIL import ImageTk
-from barcode_handling import createBarCode
+from functions import createBarCode
 
+# class definition starts here
 class otf(tk.Tk):
 
     label_height = 150
@@ -102,9 +103,19 @@ class otf(tk.Tk):
         self.photo = createBarCode(otf_string = self.readcode.get(), codetype = self.rbv.get())
         self.canvas.itemconfig(self.image_on_canvas, image = self.photo)
 
+    def updateLabel(self):
+        self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128")
+        self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (20, 200))
 
+        # draw images on canvas to be used as labels
+        self.image_on_canvas_label = self.canvas_print_label.create_image(0, 0, anchor = tk.NW, image = self.to_label_1d)
+        # calculate to_label_1d width and offset the second image by exactly that amount
+        self.image_on_canvas_label = self.canvas_print_label.create_image(self.to_label_1d.width(), 0, anchor = tk.NW, image = self.photo)
+        self.image_on_canvas_label = self.canvas_print_label.create_image(self.to_label_1d.width() + self.photo.width(), 0, anchor = tk.NW, image = self.to_label_human)
 
+        return None
 
+# run the program
 if __name__ == "__main__":
     app = otf(None)
     app.title("On-the-fly barcode generator")
