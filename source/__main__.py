@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 '''
+Application that will, down the line, be able to print labels in real time. Hopefully.
 
 @author Roman Luštrik (roman.lustrik@biolitika.si)
 '''
@@ -90,20 +91,20 @@ class otf(tk.Tk):
     def OnConfirm(self):
         self.readcode.focus_set()
         self.readcode.selection_range(0, tk.END)
-        self.refreshImage() # takes parameters from self.
-        self.updateLabel()
+        self.refreshImage()
+        self.refreshLabel()
 
     def OnReturn(self, event):
         self.readcode.focus_set()
         self.readcode.selection_range(0, tk.END)
-        self.refreshImage()
-        self.updateLabel()
+        self.refreshImage() # this refreshes the barcode image
+        self.refreshLabel() # this refreshes the label meant for printing
 
     def refreshImage(self):
         self.photo = createBarCode(otf_string = self.readcode.get(), codetype = self.rbv.get())
         self.canvas.itemconfig(self.image_on_canvas, image = self.photo)
 
-    def updateLabel(self):
+    def refreshLabel(self):
         self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128")
         self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (20, 200))
 
