@@ -13,7 +13,7 @@ from functions import createBarCode
 # class definition starts here
 class otf(tk.Tk):
 
-    label_height = 150
+    label_height = 100
     label_width = 200
     preview_width = 150
     preview_height = 150
@@ -42,8 +42,8 @@ class otf(tk.Tk):
 
     def initialize(self):
         ## Define entry field
-        self.code.set(u"Enter barcode")
-        self.readcode = tk.Entry(master = self, textvariable = self.code)
+        self.code.set(u"USE UPPERCASE LETTERS ONLY")
+        self.readcode = tk.Entry(master = self, textvariable = self.code, width = 30)
         self.readcode.bind("<Return>", self.OnConfirm)
         # Have the entry text selected to enable immediate typing
         self.readcode.focus_set()
@@ -60,24 +60,29 @@ class otf(tk.Tk):
         ## Define radiobuttons
         # self.radiobuttons.set("L")
         self.radiobuttons = tk.Radiobutton(self, text = "QR code", variable = self.rbv, value = "qr",
-                                           indicatoron = False, command = self.OnConfirm).grid(row = 2, column = 0,sticky = tk.W)
+                                           indicatoron = False, command = self.OnConfirm).grid(row = 2, column = 0,
+                                                                                               sticky = tk.W)
         self.radiobuttons = tk.Radiobutton(self, text = "DataMatrix", variable = self.rbv, value = "dm",
-                                           indicatoron = False, command = self.OnConfirm).grid(row = 2, column = 1, sticky = tk.W)
+                                           indicatoron = False, command = self.OnConfirm).grid(row = 2, column = 1,
+                                                                                               sticky = tk.W)
 
         ## Create photo based on input available
         self.photo = createBarCode(otf_string = self.readcode.get())
         # Create blank canvas for printing label
         self.canvas_photo = tk.Canvas(master = self, width = otf.preview_width, height = otf.preview_height)
-        self.canvas_label = tk.Canvas(master = self, width = otf.label_width, height = otf.label_height)
         # Add image to the canvas
-        self.photo_on_canvas = self.canvas_photo.create_image(round(self.photo.width()/2), round(self.photo.height()/2), anchor = tk.CENTER, image = self.photo)
+        self.photo_on_canvas = self.canvas_photo.create_image(round(self.photo.width()/2), round(self.photo.height()/2),
+                                                              anchor = tk.CENTER, image = self.photo)
 
-        # Create label and put it on canvas
-        self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128")
-        self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (20, 100))
-        self.label_on_canvas = self.canvas_label.create_image(0, 0, anchor = tk.NW, image = self.to_label_1d)
-        # self.image_on_canvas_label = self.canvas_print_label.create_image(50, 0, anchor = tk.NW, image = self.photo)
-        self.label_on_canvas = self.canvas_label.create_image(50, 0, anchor = tk.NW, image = self.to_label_human)
+        # # Create label and put it on canvas
+        # self.canvas_label = tk.Canvas(master = self, width = otf.label_width, height = otf.label_height)
+        # self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128",
+        #                                  size = (100, 100))
+        # self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (50, 50))
+        # self.label_on_canvas = self.canvas_label.create_image(0, 25, anchor = tk.NW, image = self.to_label_human)
+        # self.label_on_canvas = self.canvas_label.create_image(50, 0, anchor = tk.NW, image = self.to_label_1d)
+        # self.label_on_canvas = self.canvas_label.create_image(150, 25, anchor = tk.NW, image = self.to_label_human)
+        self.refreshLabel()
 
         # Place elements on the grid
         self.grid()
@@ -93,11 +98,15 @@ class otf(tk.Tk):
         self.refreshImage()
         self.refreshLabel()
 
+        return None
+
     def OnReturn(self, event):
         self.readcode.focus_set()
         self.readcode.selection_range(0, tk.END)
         self.refreshImage() # this refreshes the barcode image
         self.refreshLabel()  # this refreshes the label meant for printing
+
+        return None
 
     def refreshImage(self):
         self.photo = createBarCode(otf_string = self.readcode.get(), codetype = self.rbv.get())
@@ -106,11 +115,20 @@ class otf(tk.Tk):
         return None
 
     def refreshLabel(self):
-        self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128")
-        self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (20, 200), bg_color = "black")
+        if self.label_on_canvas != None:
+            self.canvas_label.delete(self.label_on_canvas)
 
-        self.canvas_label.itemconfig(self.label_on_canvas, image = self.to_label_1d)
-        self.canvas_label.itemconfig(self.label_on_canvas, image = self.to_label_human)
+        self.canvas_label = tk.Canvas(master = self, width = otf.label_width, height = otf.label_height)
+        self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128",
+                                         size = (100, 100))
+        self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (50, 50),
+                                            ang = 90)
+        self.label_on_canvas = self.canvas_label.create_image(0, 25, anchor = tk.NW, image = self.to_label_human)
+        self.label_on_canvas = self.canvas_label.create_image(50, 0, anchor = tk.NW, image = self.to_label_1d)
+        self.label_on_canvas = self.canvas_label.create_image(150, 25, anchor = tk.NW, image = self.to_label_human)
+
+        self.canvas_photo.grid(row = 1, columnspan = 2, sticky = tk.S)
+        self.canvas_label.grid(row = 3, columnspan = 1, sticky = tk.N)
 
         return None
 
