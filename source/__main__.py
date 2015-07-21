@@ -75,13 +75,6 @@ class otf(tk.Tk):
                                                               anchor = tk.CENTER, image = self.photo)
 
         # # Create label and put it on canvas
-        # self.canvas_label = tk.Canvas(master = self, width = otf.label_width, height = otf.label_height)
-        # self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128",
-        #                                  size = (100, 100))
-        # self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (50, 50))
-        # self.label_on_canvas = self.canvas_label.create_image(0, 25, anchor = tk.NW, image = self.to_label_human)
-        # self.label_on_canvas = self.canvas_label.create_image(50, 0, anchor = tk.NW, image = self.to_label_1d)
-        # self.label_on_canvas = self.canvas_label.create_image(150, 25, anchor = tk.NW, image = self.to_label_human)
         self.refreshLabel()
 
         # Place elements on the grid
@@ -115,11 +108,11 @@ class otf(tk.Tk):
         return None
 
     def refreshLabel(self):
-        if self.label_on_canvas != None:
+        if self.label_on_canvas is not None:
             self.canvas_label.delete(self.label_on_canvas)
 
         self.canvas_label = tk.Canvas(master = self, width = otf.label_width, height = otf.label_height)
-        self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128",
+        self.to_label_1d = createBarCode(otf_string = self.readcode.get(), codetype = "128", ang = 90,
                                          size = (100, 100))
         self.to_label_human = createBarCode(otf_string = self.readcode.get(), codetype = "human", size = (50, 50),
                                             ang = 90)

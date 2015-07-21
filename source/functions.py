@@ -39,6 +39,7 @@ def createBarCode(otf_string, codetype = "dm", size = (200, 200), bg_color = "wh
         font_img = ImageFont.truetype(font = "code39.ttf")
 
         draw.text(xy = (10, 10), text = otf_string, font = font_img, fill = font_color)
+        img = img.rotate(ang)
         out_img = ImageTk.PhotoImage(img) # convert to PhotoImage since Canvas can't handle PIL images
 
         return out_img
